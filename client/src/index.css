@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+
+
+.input {
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem; /* px-4 */
+  padding-top: 0.5rem; /* py-2 */
+  padding-bottom: 0.5rem; /* py-2 */
+  width: 100%; /* w-full */
+  border-radius: 0.25rem; /* rounded */
+}
+.btn {
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #fff; /* text-white */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem; /* px-4 */
+  padding-top: 0.5rem; /* py-2 */
+  padding-bottom: 0.5rem; /* py-2 */
+  border-radius: 0.25rem; /* rounded */
+  transition: background-color 0.2s;
+}
+.btn:hover {
+  background-color: #1d4ed8; /* bg-blue-700 */
+}
