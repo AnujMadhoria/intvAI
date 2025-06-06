@@ -85,6 +85,8 @@ router.get('/my-interviews', authMiddleware, async (req, res) => {
     const candidateId = req.user.id;
 
     const interviews = await Interview.find({ candidateId })
+      .populate('interviewerId', 'fullName name email') // <-- THIS IS REQUIRED
+      .populate('candidateId', 'candidateName fullName name email')
       .sort({ scheduledAt: -1 })
       .lean();
 
