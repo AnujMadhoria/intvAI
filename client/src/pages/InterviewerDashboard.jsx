@@ -74,9 +74,11 @@ function InterviewerDashboard() {
       <ul className="space-y-3">
         {interviews.map((int) => (
           <li key={int._id} className="border p-3 rounded shadow">
-            <p><b>Candidate:</b> {int.candidateId.fullName} ({int.candidateId.email})</p>
+            <p><b>Candidate:</b> {int.candidateId?.name}</p>
+            <p><b>email:</b> ({int.candidateId.email})</p>
             <p><b>Time:</b> {new Date(int.scheduledAt).toLocaleString()}</p>
             <p><b>Status:</b> {int.status}</p>
+
             <a href={`/candidate-profile/${int.candidateId._id}`} className="text-blue-600 underline mr-2">View Profile</a>
 
             {/* 🚀 Add Take Interview Button */}
