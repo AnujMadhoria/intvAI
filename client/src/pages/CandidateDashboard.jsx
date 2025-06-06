@@ -173,9 +173,9 @@ function CandidateDashboard() {
             return (
               <li key={interview._id} className="border p-3 rounded shadow hover:bg-gray-50 transition flex justify-between items-center">
                 <div>
-                  <p><b>Date:</b> {new Date(interview.date).toLocaleString()}</p>
+                  <p><b>Date:</b> {new Date(interview.scheduledAt).toLocaleString()}</p>
                   <p><b>Status:</b> {interview.status}</p>
-                  <p><b>Interviewer:</b> {interview.interviewerId?.name || 'Unknown'}</p>
+                  <p><b>Interviewer:</b> {interview.interviewerId?.fullName || interview.interviewerId?.name ||'Unknown'}</p>
                   <p><b>Candidate:</b> {interview.candidateId?.name || 'You'}</p>
                   <p><b>Join Link:</b> {interview.joinLink ? <a href={interview.joinLink} target="_blank" rel="noreferrer" className="text-blue-600 underline">Join Here</a> : 'Not available'}</p>
                 </div>
