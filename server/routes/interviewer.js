@@ -68,7 +68,10 @@ router.get('/my-interviews', auth, async (req, res) => {
     console.log('Fetching interviews for interviewer:', req.user.id);
 
     const interviews = await Interview.find({ interviewerId: req.user.id })
-      .populate('candidateId', 'fullName email')
+      .populate('candidateId', 'fullName name email')
+      .populate('interviewerId', 'fullName name email') 
+
+
       .sort({ scheduledAt: -1 })
       .lean();
 
