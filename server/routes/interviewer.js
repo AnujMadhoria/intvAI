@@ -33,7 +33,7 @@ router.post('/create', auth, async (req, res) => {
     // After creating the interview
     const newInterview = await Interview.findById(interview._id)
       .populate('interviewerId', 'fullName')  // Add population
-      .populate('candidateId', 'fullName email');
+      .populate('candidateId', 'fullName email '); // Add population
 
     // Emit to candidate
     const io = req.app.get('io');
@@ -68,13 +68,21 @@ router.get('/my-interviews', auth, async (req, res) => {
     console.log('Fetching interviews for interviewer:', req.user.id);
 
     const interviews = await Interview.find({ interviewerId: req.user.id })
-      .populate('candidateId', 'fullName name email')
-      .populate('interviewerId', 'fullName name email') 
+      .populate('candidateId', 'fullName name email ')
+      .populate('interviewerId', 'fullName name email ') 
 
 
       .sort({ scheduledAt: -1 })
       .lean();
-
+    // Fetch resume URLs separately
+    for (const interview of interviews) {
+      const profile = await CandidateProfile.findOne({ userId: interview.candidateId._id });
+      if (profile && profile.resumeUrl) {
+        interview.candidateId.resumeUrl = profile.resumeUrl;
+      } else {
+        interview.candidateId.resumeUrl = '';
+      }
+    }
     console.log('Interviews found:', interviews);
 
     const interviewsWithLink = interviews.map((int) => ({
@@ -103,3 +111,4 @@ router.get('/candidate/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
+
