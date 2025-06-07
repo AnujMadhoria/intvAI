@@ -78,9 +78,16 @@ function InterviewerDashboard() {
             <p><b>email:</b> ({int.candidateId.email})</p>
             <p><b>Time:</b> {new Date(int.scheduledAt).toLocaleString()}</p>
             <p><b>Status:</b> {int.status}</p>
+{console.log('Resume URL:', int.candidateId.resumeUrl)}
 
-            <a href={`/candidate-profile/${int.candidateId._id}`} className="text-blue-600 underline mr-2">View Profile</a>
-
+<a
+  href={`http://localhost:5000${int.candidateId.resumeUrl}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-blue-600 underline mr-2"
+>
+  View Profile
+</a>
             {/* 🚀 Add Take Interview Button */}
             {int.interviewLink && (
               <a
@@ -100,3 +107,4 @@ function InterviewerDashboard() {
 }
 
 export default InterviewerDashboard;
+
