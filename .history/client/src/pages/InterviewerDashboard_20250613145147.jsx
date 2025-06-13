@@ -172,6 +172,33 @@ function InterviewerDashboard() {
             <FiCalendar className="mr-2" /> Upcoming
           </button>
 
+<<<<<<< HEAD
+      <h3 className="text-xl font-semibold mb-2">📋 My Interviews</h3>
+      <ul className="space-y-3">
+        {interviews.map((int) => (
+          <li key={int._id} className="border p-3 rounded shadow">
+            <p><b>Candidate:</b> {int.candidateId?.name}</p>
+            <p><b>email:</b> ({int.candidateId.email})</p>
+            <p><b>Time:</b> {new Date(int.scheduledAt).toLocaleString()}</p>
+            <p><b>Status:</b> {int.status}</p>
+{console.log('Resume URL:', int.candidateId.resumeUrl)}
+
+<a
+  href={`http://localhost:5000${int.candidateId.resumeUrl}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-blue-600 underline mr-2"
+>
+  View Profile
+</a>
+            {/* 🚀 Add Take Interview Button */}
+            {int.interviewLink && (
+              <a
+                href={int.joinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-500 text-black px-3 py-1 rounded ml-2"
+=======
           <button
             onClick={() => { setActiveTab('today'); setMobileMenuOpen(false); }}
             className={`w-full text-left p-3 rounded-lg mb-2 flex items-center ${activeTab === 'today' ? 'bg-blue-700' : 'hover:bg-blue-700'}`}
@@ -352,6 +379,7 @@ function InterviewerDashboard() {
                 type="submit"
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center min-w-32"
                 disabled={creatingInterview}
+>>>>>>> d4dac49 (second commit)
               >
                 {creatingInterview ? (
                   <LoadingSpinner size="sm" />
@@ -577,4 +605,9 @@ function InterviewerDashboard() {
   );
 }
 
+<<<<<<< HEAD
 export default InterviewerDashboard;
+
+=======
+export default InterviewerDashboard;
+>>>>>>> d4dac49 (second commit)

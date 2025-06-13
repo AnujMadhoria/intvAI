@@ -535,6 +535,38 @@ function CandidateDashboard() {
         </div>
       )}
 
+<<<<<<< HEAD
+      {interviews.length === 0 ? (
+        <p className="text-gray-500 mb-6">No interviews scheduled.</p>
+      ) : (
+        <ul className="space-y-4 mb-6">
+          {interviews.map((interview) => {
+            const isUpcoming = new Date(interview.date) > new Date();
+            return (
+              <li key={interview._id} className="border p-3 rounded shadow hover:bg-gray-50 transition flex justify-between items-center">
+                <div>
+                  <p><b>Date:</b> {new Date(interview.scheduledAt).toLocaleString()}</p>
+                  <p><b>Status:</b> {interview.status}</p>
+                  <p><b>Interviewer:</b> {interview.interviewerId?.fullName || interview.interviewerId?.name ||'Unknown'}</p>
+                  <p><b>Candidate:</b> {interview.candidateId?.name || 'You'}</p>
+                  <p><b>Join Link:</b> {interview.joinLink ? <a href={interview.joinLink} target="_blank" rel="noreferrer" className="text-blue-600 underline">Join Here</a> : 'Not available'}</p>
+                </div>
+                {isUpcoming && interview.status === 'scheduled' && (
+                  <a
+                    href={interview.joinLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+                  >
+                    Join Interview
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+=======
       {/* Sidebar - Desktop */}
       <div className="hidden md:flex md:w-64 bg-blue-800 text-white p-4 flex-col">
         <h2 className="text-2xl font-bold mb-8 mt-4">👨‍🎓 Candidate</h2>
@@ -583,6 +615,7 @@ function CandidateDashboard() {
           </button>
         </div>
       </div>
+>>>>>>> d4dac49 (second commit)
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:p-8 overflow-y-auto">

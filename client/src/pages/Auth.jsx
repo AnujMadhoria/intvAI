@@ -17,10 +17,16 @@ function Auth() {
 
   try {
     const res = await axios.post(url, form); // Removed headers here ✅
+       console.log('API response:', res.data);
 
     // Save token and user type after successful login/signup
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('type', res.data.user.type);
+
+    // Save user data to localStorage
+    const user = res.data.user;
+    localStorage.setItem('user', JSON.stringify(user));
+          console.log('Saved user:', localStorage.getItem('user'));
 
     // Redirect based on user type
     const userType = res.data.user.type;

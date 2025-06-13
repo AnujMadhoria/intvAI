@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:5173', // Or your frontend URL
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST','PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true
   },
 });
@@ -47,6 +47,8 @@ mongoose
     server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => console.error('❌ MongoDB error:', err));
+  
+const roomUsers = {};
 
 // Socket.io Logic
 io.on('connection', (socket) => {
@@ -57,20 +59,38 @@ io.on('connection', (socket) => {
     console.log(`🔔 User ${userId} joined room ${userId}`);
     socket.join(userId);
   });
+  
+// Chat messaging
+socket.on('chat-message', ({ roomId, message, from }) => {
+  console.log(`💬 Message from ${from} in room ${roomId}: ${message}`);
+  socket.to(roomId).emit('chat-message', { from, message });
+});
+ socket.on('tab-switch', ({ roomId, from }) => {
+  socket.to(roomId).emit('candidate-tab-switch', { from });
+});
 
   // Interview join
   socket.on('join-room', ({ roomId, userId }) => {
-    console.log(`🎥 User ${userId} joined interview room ${roomId}`);
     socket.join(roomId);
-    socket.to(roomId).emit('user-joined', { userId, socketId: socket.id });
+
+    // Track users in the room
+    if (!roomUsers[roomId]) roomUsers[roomId] = [];
+    roomUsers[roomId].push({ userId, socketId: socket.id });
+
+    // Send updated users to the newly joined user
+    socket.emit('users-in-room', roomUsers[roomId].filter(u => u.socketId !== socket.id));
+
+    // Notify others
+    socket.to(roomId).emit('user-ready', { userId, socketId: socket.id });
   });
+
 
   // WebRTC signaling
   socket.on('offer', ({ offer, to }) => {
     console.log(`📨 Offer from ${socket.id} to ${to}`);
     socket.to(to).emit('offer', { offer, from: socket.id });
   });
-
+  
   socket.on('answer', ({ answer, to }) => {
     console.log(`📨 Answer from ${socket.id} to ${to}`);
     socket.to(to).emit('answer', { answer, from: socket.id });
@@ -83,6 +103,11 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('❌ A user disconnected:', socket.id);
+    for (const roomId in roomUsers) {
+      roomUsers[roomId] = roomUsers[roomId].filter(u => u.socketId !== socket.id);
+      // Optional: notify others
+      socket.to(roomId).emit('user-disconnected', { socketId: socket.id });
+    }
   });
 });
 

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-
+const authMiddleware = require('../middlewares/authMiddleware'); // Ensure this path is correct
 const SECRET = process.env.JWT_SECRET;
 
 // Signup
@@ -32,6 +32,18 @@ router.post('/login', async (req, res) => {
 
   const token = jwt.sign({ id: user._id, type: user.type }, SECRET, { expiresIn: '1d' });
   res.json({ token, user });
+});
+// Get User Info
+router.get('/user', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch user information' });
+  }
 });
 
 module.exports = router;

@@ -10,6 +10,8 @@ const JoinInterviewPage = () => {
     // Redirect or show error
     return <div>Not authorized. Please login.</div>;
   }
+  console.log('Joining room:', roomId, 'User:', user);
+  console.log(user._id  );
   return (
     <JoinInterviewRoom roomId={roomId} userId={user._id} />
   );

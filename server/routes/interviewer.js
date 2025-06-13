@@ -4,6 +4,7 @@ const Interview = require('../models/Interview');
 const User = require('../models/User');
 const CandidateProfile = require('../models/CandidateProfile');
 const sendNotification = require('../utils/sendNotification');
+const { sendInterviewScheduledEmail } = require('../utils/emailService');
 
 // Create Interview
 // Create Interview
@@ -51,16 +52,99 @@ router.post('/create', auth, async (req, res) => {
       joinLink
     );
 
-    res.json({ message: 'Interview created', interview: {
+   
+  try {
+      await sendInterviewScheduledEmail(candidateEmail, {
+        candidateName: candidate.fullName || candidate.name,
+        scheduledAt: interview.scheduledAt,
+        interviewLink: interview.joinLink
+      });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Don't fail the request if email fails
+    }
+
+// Send only one response!
+res.status(201).json({
+  message: 'Interview created',
+  interview: {
     ...interview._doc,
-    interviewLink: joinLink  // Add this
-  } });
-  } catch (err) {
+    interviewLink: joinLink
+  }
+});  } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create interview' });
   }
 });
 
+// PATCH endpoint to update consideration status
+router.patch('/consider/:interviewerId', auth, async (req, res) => {
+  try {
+    const { interviewerId } = req.params;
+    const { considered } = req.body;
+
+    // Validate input
+    if (typeof considered !== 'boolean') {
+      return res.status(400).json({ error: 'Invalid consideration status' });
+    }
+
+    // Find and update the interview
+    const interview = await Interview.findOneAndUpdate(
+      { 
+        _id: interviewerId,
+        interviewerId: req.user.id, // Ensure only the interviewer can update
+        // status: 'completed' // Only allow for completed interviews
+      },
+      { considered },
+      { new: true }
+    );
+
+    if (!interview) {
+      return res.status(404).json({ error: 'Interview not found or not authorized' });
+    }
+
+    res.json(interview);
+  } catch (error) {
+    console.error('Error updating consideration status:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update Interviewer Info
+router.put('/update-info', auth, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const userId = req.user.id;
+
+    // Validate email format
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Check if email is already taken by another user
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Email already in use' });
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { name, email } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
 
 // Get all interviews by interviewer
 router.get('/my-interviews', auth, async (req, res) => {

@@ -5,7 +5,11 @@ const InterviewSchema = new mongoose.Schema({
   interviewerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   scheduledAt: Date,
   status: { type: String, enum: ['scheduled', 'completed', 'cancelled'], default: 'scheduled' },
-  joinLink: String,  // link or room ID for joining interview
+  joinLink: String, 
+  considered: {
+    type: Boolean,
+    default: false
+  }, // link or room ID for joining interview
   // other fields like questions, reports etc.
 });
 

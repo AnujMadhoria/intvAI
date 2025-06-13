@@ -6,8 +6,10 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+    "mongodb": "^6.17.0",
     "mongoose": "^8.15.0",
     "multer": "^2.0.0",
+    "nodemailer": "^7.0.3",
     "socket.io": "^4.8.1",
     "uuid": "^11.1.0"
   },

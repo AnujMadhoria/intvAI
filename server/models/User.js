@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
   password: String,
   type: { type: String, enum: ['candidate', 'interviewer'], required: true },
   createdAt: { type: Date, default: Date.now },
-  resumeUrl: String,
+  resumeUrl: { type: String },
+  
 
 });
 
